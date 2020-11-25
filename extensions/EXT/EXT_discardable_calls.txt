@@ -1,0 +1,50 @@
+Name
+
+    EXT_discardable_calls
+
+Contributors
+
+    UIS
+
+Status
+
+    Draft
+
+Version
+
+    Draft: #2
+
+Dependencies
+
+    WIP
+
+Overview
+New Procedures and Functions
+
+    void DiscardStrategyEXT(enum strategy)
+
+Discussion
+    
+    Will void DiscardFenceEXT() be useful to mark start of frame?
+    Stop disarding after last swap? What if comands issued too fast? Use frame
+    number or DiscardFenceEXT()?
+    Should swapbuffers reset strategy?
+
+Example
+
+    //Dispatch first frame commands
+    glxSwapBuffersMscOML(...);
+    //Dispatch second frame commands while first frame still rendering
+    glDiscardStrategyEXT(GL_DISCARD_DRAW);
+    glDrawArrays(GL_TRIANGLES, 0, 100500);
+    glBufferSubData(...);
+    glxSwapBuffersMscOML(...);
+    //Dispatch third frame commands while first still rendering
+    glDiscardStrategyEXT(GL_TRUE);
+    glDrawArrays(GL_TRIANGLES, 0, 9000);
+    glxSwapBuffersMscOML(...);
+
+    //Here first frame ended rendering
+    //glDrawArrays discarded, while glBufferSubData not
+    //And now it executes glDrawArrays from third frame
+    //So after first frame third will be displayed
